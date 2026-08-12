@@ -1,0 +1,23 @@
+workflows:
+  android-build:
+    name: Build Android APK
+    instance_type: mac_mini_m1
+    max_build_duration: 30
+    environment:
+      node: lts
+      java: 17
+    scripts:
+      - name: Install dependencies
+        script: |
+          npm install
+      - name: Build web assets & sync Capacitor
+        script: |
+          npm run build
+          npx cap sync android
+      - name: Build Android APK
+        script: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug
+    artifacts:
+      - android/app/build/outputs/apk/**/*.apk
